@@ -100,8 +100,8 @@ Bismap requires numpy and pandas and it uses other python modules such as:
 Virtual ChIP-seq uses mercurial version control. Make sure that mercurial (hg) is installed.
 Download Virtual ChIP-seq to the directory of your python packages using::
 
-    hg clone https://bitbucket.org/hoffmanlab/virtualchipseq
-    cd virtualchipseq
+    hg clone https://bitbucket.org/hoffmanlab/virchip
+    cd virchip
     python setup.py install
 
 
@@ -121,7 +121,7 @@ First we generate the a table with required features::
         --dnase-path K562_dnase.tsv.gz
 
 
-Now we will predict binding of NRF1 using an RNA-seq table and a reference matrix located at virtualchipseq/data::
+Now we will predict binding of NRF1 using an RNA-seq table and a reference matrix located at virchip/data::
 
     python virchip-predict.py data/trainedModels data/NRF1_complete_table.tsv.gz\
         data/NRF1_predictions.tsv.gz NRF1
