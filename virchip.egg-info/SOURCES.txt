@@ -1,0 +1,13 @@
+MANIFEST.in
+README.rst
+setup.py
+virchip/virchip-make-input-data.py
+virchip/virchip-predict.py
+virchip/virchip-train.py
+virchip/virchip_utils.py
+virchip.egg-info/PKG-INFO
+virchip.egg-info/SOURCES.txt
+virchip.egg-info/dependency_links.txt
+virchip.egg-info/not-zip-safe
+virchip.egg-info/requires.txt
+virchip.egg-info/top_level.txt
