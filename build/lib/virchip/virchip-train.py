@@ -27,9 +27,10 @@ def get_args():
         "Other expected columns are: ExpScore, NarrowPeakSignal, "
         "and Conservation.",
         epilog='''
-        Citation: Karimzadeh M. and, Hoffman MM. 2017.
+        Citation: Karimzadeh M. and, Hoffman MM. 2018.
         Virtual ChIP-seq: predicting transcription factor binding by
-        learning from the transcriptome. In prep.
+        learning from the transcriptome.
+        https://doi.org/10.1101/168419
         ''')
     requiredNamed = parser.add_argument_group('required named arguments')
     MLPoptions = parser.add_argument_group(

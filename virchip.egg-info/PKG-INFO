@@ -6,6 +6,7 @@ Home-page: https://bitbucket.org/hoffmanlab/proj/virtualchipseq
 Author: Mehran Karimzadeh, Michael M. Hoffman
 Author-email: mehran.karimzadeh@uhnresearch.ca
 License: GPLv3
+Description-Content-Type: UNKNOWN
 Description: 
         
         Virtual ChIP-seq: predicting TF binding by learning from the transcriptome
@@ -19,13 +20,18 @@ Description:
         in any cell type with available data on chromatin accessibility and gene expression.**
         
         
+        Virtual ChIP-seq is a supervised *binary classification* multi-layer perceptron wrapper.
+        You can re-train the MLP by trying different parameters or adding other features.
+        You can also use the already trained models *(one model per TF)* to predict binding of
+        certain TFs in a new cell type with only *RNA-seq data* and *chromatin accessibility data*.
+        
         
         Required data
         -------------
         
         Virtual ChIP-seq uses several genomic information such as DNA conservation
         and transcription factor sequence preference. Reference matrices with
-        this information are already created for GRCh38 genome. Please note
+        this information are already created for the GRCh38 genome. Please note that
         TF sequence motif scores are only calculated for any region that has overlap
         with any of the Roadmap consortium DNase-seq peaks. We used JASPAR 2016 motif
         database.
@@ -37,6 +43,15 @@ Description:
         matrices which include Cistrome DB, ENCODE, PhastCons genomic conservation, and outputs of
         fimo on all JASPAR DB motifs for any genomic region
         which was accessible in any of the Roadmap tissue DNase-seq data.
+        
+        
+        If you want to create a new expression score reference matrix (e.g. for a new TF)
+        you can use the *virchip-make-expscore-matrix.py* script.
+        This script calculates all pairwise Pearson correlation R and is slow (around 18 CPU hours).
+        You can use the **-EndBeforeCor** option and run the output with *virchip-make-expscore-matrix.R*.
+        This Rscript bootstraps samples to estimate which Pearson R correlation cutoff is associated
+        with the p-value cutoff for masking correlations which are not significant.
+        
         
         
         .. _Zenodo: https://doi.org/10.5281/zenodo.823297

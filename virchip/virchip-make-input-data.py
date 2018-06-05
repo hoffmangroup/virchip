@@ -225,9 +225,10 @@ def get_args():
         "expression score, and chromatin accessibility data "
         "for the transcription factor of interest.",
         epilog='''
-        Citation: Karimzadeh M. and, Hoffman MM. 2017.
+        Citation: Karimzadeh M. and, Hoffman MM. 2018.
         Virtual ChIP-seq: predicting transcription factor binding by
-        learning from the transcriptome. In prep.
+        learning from the transcriptome.
+        https://doi.org/10.1101/168419
         ''')
     requiredNamed = parser.add_argument_group('required named arguments')
     parser.add_argument(

@@ -1,6 +1,7 @@
 MANIFEST.in
 README.rst
 setup.py
+virchip/virchip-make-expscore-matrix.py
 virchip/virchip-make-input-data.py
 virchip/virchip-predict.py
 virchip/virchip-train.py

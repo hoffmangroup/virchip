@@ -15,9 +15,10 @@ def get_args():
         "stored with key name 'Features' and the scikit-learn model"
         "stored with key name 'Model'",
         epilog='''
-        Citation: Karimzadeh M. and, Hoffman MM. 2017.
+        Citation: Karimzadeh M. and, Hoffman MM. 2018.
         Virtual ChIP-seq: predicting transcription factor binding by
-        learning from the transcriptome. In prep.
+        learning from the transcriptome.
+        https://doi.org/10.1101/168419
         ''')
     parser.add_argument(
         "model_dir",
