@@ -1,12 +1,11 @@
 Metadata-Version: 1.1
 Name: virchip
-Version: 0.0.1
+Version: 1.1.0
 Summary: Virtual ChIP-seq: predicting transcription factor binding by learning from the transcriptome
 Home-page: https://bitbucket.org/hoffmanlab/proj/virtualchipseq
 Author: Mehran Karimzadeh, Michael M. Hoffman
 Author-email: mehran.karimzadeh@uhnresearch.ca
 License: GPLv3
-Description-Content-Type: UNKNOWN
 Description: 
         
         Virtual ChIP-seq: predicting TF binding by learning from the transcriptome

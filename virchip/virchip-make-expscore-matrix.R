@@ -1,8 +1,8 @@
 options(stringsAsFactors=FALSE)
 args = commandArgs(trailingOnly=TRUE)
-if(length(args) != 5){
-    cat("Usage: Rscript: chip_rna_cor.R <RnaPath> <ChipMatPath> <OutPath> <Window> <NumGenes>\n")
-    cat("Please provide all required 5 positional arguments")
+if(length(args) != 6){
+    cat("Usage: Rscript: chip_rna_cor.R <RnaPath> <ChipMatPath> <OutPath> <Window> <NumGenes> <Chrom>\n")
+    cat("Please provide all required 6 positional arguments")
 }
 cat("Proceeding with 5 provided arguments\n")
 print(args)
@@ -12,8 +12,9 @@ chip_path = args[2]
 out_path = args[3]
 
 # Constants
-window = args[4]
-num_genes = args[5]
+window = as.numeric(args[4])
+num_genes = as.numeric(args[5])
+chrom = args[6]
 
 
 

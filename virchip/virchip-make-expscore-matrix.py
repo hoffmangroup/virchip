@@ -26,9 +26,11 @@ def load_args(items=[]):
         help="Name of transcription factor")
     parser.add_argument(
         "out_dir",
+        metavar="out-dir",
         help="Directory for writing the gzipped tab-separated outputs.")
     parser.add_argument(
         "rna_path",
+        metavar="rna-path",
         help="Matrix of RNA expression values for "
         "all the different cell types.")
     parser.add_argument(
@@ -36,7 +38,7 @@ def load_args(items=[]):
         help="Name of chromosome")
     requiredNamed.add_argument(
         "--chip-paths",
-        metavar="NPS",
+        metavar="CHIPS",
         nargs="*",
         help="Path to gzipped narrowPeak files of ChIP-seq data")
     requiredNamed.add_argument(
@@ -45,7 +47,7 @@ def load_args(items=[]):
         nargs="*",
         help="Name of cell types (same order as --chip_paths)")
     requiredNamed.add_argument(
-        "--chromsize_path",
+        "--chromsize-path",
         metavar="CHROMLEN",
         help="Path to 2 column chromosome and size file")
     parser.add_argument(
@@ -65,7 +67,11 @@ def load_args(items=[]):
         help="If specified, does not consider peaks that are only in one "
         "replicate (when more than 1 replicate exists).")
     parser.add_argument(
-        "-num_genes",
+        "--merge_chip",
+        action="store_true",
+        help="Specify to merge multiple ChIP-seq replicates")
+    parser.add_argument(
+        "--num_genes",
         default=5000,
         type=int,
         help="Number of genes to use from the RNA-seq matrix. "
@@ -75,6 +81,11 @@ def load_args(items=[]):
         action="store_true",
         help="If specified, writes RNA-seq and ChIP-seq matrix and exits")
     args = parser.parse_args()
+    for i in range(len(args.chip_paths)):
+        print("Assuming {} corresponds to {}".format(
+                args.chip_paths[i], args.train_cells[i]))
+    if not args.merge_chip:
+        print("Caution, running without merging multiple ChIP-seq replicates")
     return args
 
 
@@ -173,7 +184,7 @@ def make_chip_matrix(np_paths, trian_cells, tf,
             cell_df = pd.DataFrame(
                 cell_ar, columns=["{}.{}".format(cell_name, 0)])
         list_dfs.append(cell_df)
-        print("Done with {}".format(cell_name))
+        print("Added ChIP-seq data of {}".format(cell_name))
     tf_df = pd.concat(list_dfs, 1)
     sum_rows = tf_df.apply(sum, 1)
     tf_df = tf_df.iloc[np.where(sum_rows > 0)[0], :]
@@ -195,6 +206,7 @@ def get_chrpos_dict(np_dir, window):
         start = 0
         with gzip.open(wg_fullpath, "rb") as wg_link:
             for wg_line in wg_link:
+                wg_line = wg_line.decode()
                 if "=" in wg_line:
                     if "chrom=" in wg_line:
                         start = 0
@@ -287,9 +299,9 @@ def write_coefs(out_dir, coef_df, job_id, other_tf, tf_id):
         os.makedirs(coef_dir)
     out_path = "{}/{}_{}_{}_Coefficients-Linear-Model.txt.gz".format(
         coef_dir, job_id, other_tf, tf_id)
-    out_link = gzip.open(out_path, "wb")
-    coef_df.to_csv(out_link, sep="\t", index=False)
-    out_link.close()
+    # out_link = gzip.open(out_path, "wb")
+    coef_df.to_csv(out_path, sep="\t", index=False, compression="gzip")
+    # out_link.close()
     print("Created {}".format(out_path))
 
 
@@ -363,8 +375,7 @@ def annotate_peaks_motor(out_dir, np_paths, rna_path, window,
         out_path = "{}/{}_{}_ChIPseqMatrix.tsv.gz".format(
             out_dir, tf, chrom)
         if not os.path.exists(out_path):
-            with gzip.open(out_path, "wb") as out_link:
-                tf_df.to_csv(out_link, sep="\t")
+            tf_df.to_csv(out_path, sep="\t", compression="gzip")
         else:
             raise ValueError("{} existed".format(out_path))
         raise ValueError("Exiting due to setting -EndBeforeCor")
@@ -381,8 +392,7 @@ def annotate_peaks_motor(out_dir, np_paths, rna_path, window,
             out_dir, tf, chrom)
         print("Created values for {}".format(out_path))
         print("Writing correlation values to {}".format(out_path))
-        with gzip.open(out_path, "wb") as out_link:
-            cors_df.to_csv(out_link, sep="\t")
+        cors_df.to_csv(out_path, sep="\t", compression="gzip")
         print("Successfully created {}".format(out_path))
 
 
@@ -390,6 +400,7 @@ def get_chrom_dict(chromsize_path):
     out_dict = {}
     with open(chromsize_path, "r") as chromsize_link:
         for chromsize_line in chromsize_link:
+            # chromsize_line = chromsize_line.decode()
             chrom, size = chromsize_line.rstrip().split("\t")
             out_dict[chrom] = int(size)
     return out_dict
