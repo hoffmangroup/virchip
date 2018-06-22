@@ -73,7 +73,7 @@ for each TF. These models are available from Virtual ChIP-seq datasets deposited
 You can use virchip-predict.py and predict binding of 70 TFs (36 with MCC > 0.3).
 *virchip-predict.py* assumes that a directory contains trained models named as <TF>.joblib.pickle::
 
-    python virchip-predict.py data/trainedModels data/NRF1_complete_table.tsv.gz\
+    python virchip-predict.py data/trainedModels data/NRF1_complete_table.tsv.gz \
         data/NRF1_predictions.tsv.gz NRF1
 
 
@@ -95,10 +95,76 @@ so the learned model would be more generalizable to new cell types::
 
     TRAINDIRS=(data/trainDirs/GM12878 data/trainDirs/K562)
     TRAINCELLS=(GM12878 K562)
-    python virchip-train.py NRF1 $OUTDIR --test-frac 0.01 --merge-chips\
-    --train-dirs ${TRAINDIRS[@]} --train-cells ${TRAINCELLS[@]}\
-    --hidden-layers 5 20 --hidden-units 10 --activation-functions logistic\
-    --regularization 0.001 0.01
+    python virchip-train.py NRF1 $OUTDIR --test-frac 0.01 --merge-chips \
+        --train-dirs ${TRAINDIRS[@]} --train-cells ${TRAINCELLS[@]} \
+        --hidden-layers 5 20 --hidden-units 10 --activation-functions logistic \
+        --regularization 0.001 0.01
+
+
+Expression score
+----------------
+
+We have provided references matrices for calculating the expression score in a new cell type.
+If you want to generate a new reference matrix (e.g. for a new TF), you can do that
+using the stand-alone python script *virchip-make-expscore-matrix.py*::
+
+    TF=NRF1
+    OUTDIR=data/ChipExpMats/NRF1-V2
+    mkdir $OUTDIR
+    RNA=data/RankOfRPKM_EncodeCCLE_RNA.tsv.gz
+    NPS=(data/narrowPeaks/NRF1/ENCODEProcessingPipeline_HepG2_NRF1_nan_No-Control_ENCFF313RFR.narrowpeak.gz
+         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_K562_NRF1_nan_No-Control_ENCFF161WZP.narrowpeak.gz
+         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_MCF-7_NRF1_nan_No-Control_ENCFF182QJW.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM1462478_T47D.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935308_H1-hESC.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935309_GM12878.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935636_HeLa-S3.narrowpeak.gz)
+    CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
+    WINDOW=200
+    NUMGENES=100
+    python virchip-make-expscore-matrix.py \
+        $TF $OUTDIR $RNA chr21 --window $WINDOW \
+        --qval_cutoff 4 --stringent --merge_chip \
+        --num_genes $NUMGENES --chip-paths ${NPS[@]} \
+        --train-cells ${CELLS[@]} --chromsize-path data/hg38_chrsize.tsv
+
+
+This script performs vectorized iterations between every pair of genomic region (in ChIP-seq data)
+and gene (in RNA-seq data). Since R has a more efficient build of the Pearson correlation matrix,
+you can combined this script with *virchip-make-expscore-matrix.py*.
+To do this, please specify the **--EndBeforeCor** option and run the Rscript similar
+to the example below::
+
+    TF=NRF1
+    OUTDIR=data/ChipExpMats/NRF1-V2
+    mkdir $OUTDIR
+    RNA=data/RankOfRPKM_EncodeCCLE_RNA.tsv.gz
+    NPS=(data/narrowPeaks/NRF1/ENCODEProcessingPipeline_HepG2_NRF1_nan_No-Control_ENCFF313RFR.narrowpeak.gz
+         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_K562_NRF1_nan_No-Control_ENCFF161WZP.narrowpeak.gz
+         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_MCF-7_NRF1_nan_No-Control_ENCFF182QJW.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM1462478_T47D.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935308_H1-hESC.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935309_GM12878.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935636_HeLa-S3.narrowpeak.gz)
+    CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
+    WINDOW=200
+    NUMGENES=100
+    python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21 \
+        --window $WINDOW --qval_cutoff 4 --stringent --merge_chip  \
+        --num_genes $NUMGENES --chip-paths ${NPS[@]} --train-cells  \
+        ${CELLS[@]} --chromsize-path data/hg38_chrsize.tsv
+
+
+## Calculating expression score using both python script and Rscript
+```
+NUMGENES=5000 ## Rscript is faster and it can handle more genes
+OUTDIR=data/ChipExpMats/NRF1-V3
+mkdir $OUTDIR
+python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21 --window $WINDOW --qval_cutoff 4 --stringent --merge_chip --num_genes $NUMGENES --chip-paths ${NPS[@]} --train-cells ${CELLS[@]} --chromsize-path data/hg38_chrsize.tsv --EndBeforeCor
+Usage: Rscript: chip_rna_cor.R <RnaPath> <ChipMatPath> <OutPath> <Window> <NumGenes>
+Rscript virchip-make-expscore-matrix.R $RNA $OUTDIR/NRF1_chr21_ChIPseqMatrix.tsv.gz $OUTDIR/NRF1_chr21_ChipExpCorrelation.tsv.gz $WINDOW $NUMGENES
+```
+
 
 
 Quick start
