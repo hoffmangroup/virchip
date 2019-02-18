@@ -47,7 +47,7 @@ with the p-value cutoff for masking correlations which are not significant.
 
 .. _Zenodo: https://doi.org/10.5281/zenodo.823297
 
-Cell specific data
+Cell type specific data
 ==================
 
 Use the *virchip-make-input-data.py* script to create a reference table
