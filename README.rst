@@ -17,6 +17,7 @@ You can also use the already trained models *(one model per TF)* to predict bind
 certain TFs in a new cell type with only *RNA-seq data* and *chromatin accessibility data*.
 
 
+
 Required data
 -------------
 
@@ -170,13 +171,19 @@ Rscript virchip-make-expscore-matrix.R $RNA $OUTDIR/NRF1_chr21_ChIPseqMatrix.tsv
 Quick start
 -----------
 
-We have tested Umap installation on a CentOS system using python 2.7.11.
-Bismap requires numpy and pandas and it uses other python modules such as:
+We have tested Virtual ChIP-seq installation on a CentOS system using python 2.7.11.
+Virtual ChIP-seq requires numpy and pandas and it uses other python modules such as:
 
-* gzip
-* os
-* sklearn
 
+* Numpy
+* Pandas
+* scikit-learn (v0.18.1)
+
+
+If you want to use pre-trained Virtual ChIP-seq models, newer versions of scikit-learn don't work.
+Scikit-learn changed their data structure for saving the model parameters and they don't
+have an API for extracting and re-saving the model parameters.
+At this point, unfortunately, you cannot use pre-trained Virtual ChIP-seq models with newer versions.
 Virtual ChIP-seq uses mercurial version control. Make sure that mercurial (hg) is installed.
 Download Virtual ChIP-seq to the directory of your python packages using::
 

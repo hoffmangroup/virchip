@@ -191,9 +191,16 @@ def add_chromatin_acc(bed_df, dnase_path, chrom, chromsize, bin_size):
                           "pVal", "qVal", "Summit"]
     np_df = pd.read_csv(dnase_path, sep="\t", compression="gzip",
                         header=None)
+    if np_df.shape[1] < 10:
+        raise ValueError("Please provide 10-column gzipped narrowPeak")
     np_df.columns = narrowpeak_columns
     np_df = np_df[np_df.iloc[:, 0] == chrom]
-    np_ar = get_narpeak_ar(np_df, chromsize)
+    if np_df.shape[0] < 1:
+        raise ValueError("No match for {} in DNase, stoppping".format(chrom))
+    try:
+        np_ar = get_narpeak_ar(np_df, chromsize)
+    except Exception:
+        raise ValueError("Are you sure you are using hg38?")
     find_overlap_motor = partial(
         find_overlap, cream_ar=np_ar, bin_size=bin_size,
         return_bool=False)
