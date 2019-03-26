@@ -156,15 +156,24 @@ to the example below::
         ${CELLS[@]} --chromsize-path data/hg38_chrsize.tsv
 
 
-## Calculating expression score using both python script and Rscript
-```
-NUMGENES=5000 ## Rscript is faster and it can handle more genes
-OUTDIR=data/ChipExpMats/NRF1-V3
-mkdir $OUTDIR
-python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21 --window $WINDOW --qval_cutoff 4 --stringent --merge_chip --num_genes $NUMGENES --chip-paths ${NPS[@]} --train-cells ${CELLS[@]} --chromsize-path data/hg38_chrsize.tsv --EndBeforeCor
-Usage: Rscript: chip_rna_cor.R <RnaPath> <ChipMatPath> <OutPath> <Window> <NumGenes>
-Rscript virchip-make-expscore-matrix.R $RNA $OUTDIR/NRF1_chr21_ChIPseqMatrix.tsv.gz $OUTDIR/NRF1_chr21_ChipExpCorrelation.tsv.gz $WINDOW $NUMGENES
-```
+
+
+Calculating expression score using both python script and Rscript
+-----------------------------------------------------------------
+
+
+Example code::
+
+    NUMGENES=5000 ## Rscript is faster and it can handle more genes
+    OUTDIR=data/ChipExpMats/NRF1-V3
+    mkdir $OUTDIR
+    python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21 \
+        --window $WINDOW --qval_cutoff 4 --stringent --merge_chip \
+        --num_genes $NUMGENES --chip-paths ${NPS[@]} --train-cells ${CELLS[@]} \
+        --chromsize-path data/hg38_chrsize.tsv --EndBeforeCor
+    # Usage: Rscript: chip_rna_cor.R <RnaPath> <ChipMatPath> <OutPath> <Window> <NumGenes>
+    Rscript virchip-make-expscore-matrix.R $RNA $OUTDIR/NRF1_chr21_ChIPseqMatrix.tsv.gz $OUTDIR/NRF1_chr21_ChipExpCorrelation.tsv.gz $WINDOW $NUMGENES
+
 
 
 
