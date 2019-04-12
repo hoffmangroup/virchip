@@ -187,6 +187,7 @@ Virtual ChIP-seq requires numpy and pandas and it uses other python modules such
 * Numpy
 * Pandas
 * scikit-learn (v0.18.1)
+* scipy (v1.1.0)
 
 
 If you want to use pre-trained Virtual ChIP-seq models, newer versions of scikit-learn don't work.
