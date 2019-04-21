@@ -215,7 +215,7 @@ First we generate the a table with required features::
         data/K562_RNA.tsv.gz data/RefDir --rna-cell K562 --blacklist_path\
         data/hg38_EncodeBlackListedRegions_200bpBins.bed.gz\
         --bin_size 200 --merge-chips --chromsize-path data/hg38_chrsize.tsv\
-        --dnase-path K562_dnase.tsv.gz
+        --dnase-path data/K562_dnase.tsv.gz
 
 
 Now we will predict binding of NRF1 using an RNA-seq table and a reference matrix located at virchip/data::
