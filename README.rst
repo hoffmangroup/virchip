@@ -57,13 +57,25 @@ You need a gzipped RNA-seq matrix where rows are Hugo gene symbols and
 columns are different cell types (at least one cell). You also need a standard gzipped
 narrow peak file with chromatin accessibility information on your cell type::
 
-    wget https://www.pmgenomics.ca/hoffmanlab/proj/virchip/data/virchip-startup-data.tar.gz 
+    wget https://www.pmgenomics.ca/hoffmanlab/proj/virchip/data/virchip-startup-data.tar.gz --no-check-certificate
     tar -xvf virchip-startup-data.tar.gz
     python virchip-make-input-data.py NRF1 data/NRF1_complete_table.tsv.gz data/ChipExpMats/NRF1\
         data/K562_RNA.tsv.gz data/RefDir --rna-cell K562 --blacklist_path\
         data/hg38_EncodeBlackListedRegions_200bpBins.bed.gz\
         --bin_size 200 --merge-chips --chromsize-path data/hg38_chrsize.tsv\
-        --dnase-path K562_dnase.tsv.gz
+        --dnase-path data/K562_dnase.tsv.gz
+
+
+Estimated time for the above script is 2 minutes and 40 seconds.
+The output from this scripts is expected to be::
+
+            Chrom   Start   End     Conservation    ExpScore        PreviousBinding JASPAR.NRF1_MA0506.1    NarrowPeakSignal
+            chr21.5013500.5013700   chr21   5013500 5013700 0.241975124378  0.0     0       0.0     2.2167641791044774
+            chr21.5013550.5013750   chr21   5013550 5013750 0.216517412935  0.0     0       0.0     5.680458208955223
+            chr21.5013600.5013800   chr21   5013600 5013800 0.186960199005  0.0     0       0.0     9.144152238805967
+            chr21.5013650.5013850   chr21   5013650 5013850 0.180184079602  0.0     0       0.0     12.607846268656713
+
+            
 
 
 Prediction
@@ -81,6 +93,15 @@ You can use virchip-predict.py and predict binding of 70 TFs (36 with MCC > 0.3)
 .. _Zenodo: https://doi.org/10.5281/zenodo.823297
 
 
+This step takes approximately 6 seconds and the output looks as below ::
+
+
+
+        Chrom   Start   End     Posterior.NRF1
+        chr21.5013500.5013700   chr21   5013500 5013700 0.00014586298797865082
+        chr21.5013550.5013750   chr21   5013550 5013750 0.0005698292634640193
+        chr21.5013600.5013800   chr21   5013600 5013800 0.001994703141226153 
+
 
 Training
 --------
@@ -96,11 +117,15 @@ so the learned model would be more generalizable to new cell types::
 
     TRAINDIRS=(data/trainDirs/GM12878 data/trainDirs/K562)
     TRAINCELLS=(GM12878 K562)
+    OUTDIR=data
     python virchip-train.py NRF1 $OUTDIR --test-frac 0.01 --merge-chips \
         --train-dirs ${TRAINDIRS[@]} --train-cells ${TRAINCELLS[@]} \
         --hidden-layers 5 20 --hidden-units 10 --activation-functions logistic \
         --regularization 0.001 0.01
 
+
+This step takes approximately 7 minutes and 30 seconds to accomplish and saves the output
+to the file data/NRF1_Model_TrainedOn_K562_GM12878-TrainedModel.joblib.pickle
 
 Expression score
 ----------------
@@ -123,38 +148,21 @@ using the stand-alone python script *virchip-make-expscore-matrix.py*::
     CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
     WINDOW=200
     NUMGENES=100
-    python virchip-make-expscore-matrix.py \
-        $TF $OUTDIR $RNA chr21 --window $WINDOW \
-        --qval_cutoff 4 --stringent --merge_chip \
-        --num_genes $NUMGENES --chip-paths ${NPS[@]} \
+    python virchip-make-expscore-matrix.py\
+        $TF $OUTDIR $RNA chr21 --window $WINDOW\
+        --qval-cutoff 4 --stringent --merge-chip\
+        --num-genes $NUMGENES --chip-paths ${NPS[@]} \
         --train-cells ${CELLS[@]} --chromsize-path data/hg38_chrsize.tsv
 
 
+For this script we used 100 genes to make the run time smaller (we used 5000 genes for the manuscript).
+Even with 100 genes and on the smallest chromosome, this script takes 6 minutes and 10 seconds.
+
 This script performs vectorized iterations between every pair of genomic region (in ChIP-seq data)
 and gene (in RNA-seq data). Since R has a more efficient build of the Pearson correlation matrix,
-you can combined this script with *virchip-make-expscore-matrix.py*.
+you can combine this script with *virchip-make-expscore-matrix.R*.
 To do this, please specify the **--EndBeforeCor** option and run the Rscript similar
-to the example below::
-
-    TF=NRF1
-    OUTDIR=data/ChipExpMats/NRF1-V2
-    mkdir $OUTDIR
-    RNA=data/RankOfRPKM_EncodeCCLE_RNA.tsv.gz
-    NPS=(data/narrowPeaks/NRF1/ENCODEProcessingPipeline_HepG2_NRF1_nan_No-Control_ENCFF313RFR.narrowpeak.gz
-         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_K562_NRF1_nan_No-Control_ENCFF161WZP.narrowpeak.gz
-         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_MCF-7_NRF1_nan_No-Control_ENCFF182QJW.narrowpeak.gz
-         data/narrowPeaks/NRF1/GSM1462478_T47D.narrowpeak.gz
-         data/narrowPeaks/NRF1/GSM935308_H1-hESC.narrowpeak.gz
-         data/narrowPeaks/NRF1/GSM935309_GM12878.narrowpeak.gz
-         data/narrowPeaks/NRF1/GSM935636_HeLa-S3.narrowpeak.gz)
-    CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
-    WINDOW=200
-    NUMGENES=100
-    python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21 \
-        --window $WINDOW --qval_cutoff 4 --stringent --merge_chip  \
-        --num_genes $NUMGENES --chip-paths ${NPS[@]} --train-cells  \
-        ${CELLS[@]} --chromsize-path data/hg38_chrsize.tsv
-
+to the example above.
 
 
 
@@ -167,14 +175,28 @@ Example code::
     NUMGENES=5000 ## Rscript is faster and it can handle more genes
     OUTDIR=data/ChipExpMats/NRF1-V3
     mkdir $OUTDIR
-    python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21 \
-        --window $WINDOW --qval_cutoff 4 --stringent --merge_chip \
-        --num_genes $NUMGENES --chip-paths ${NPS[@]} --train-cells ${CELLS[@]} \
+    TF=NRF1
+    RNA=data/RankOfRPKM_EncodeCCLE_RNA.tsv.gz
+    NPS=(data/narrowPeaks/NRF1/ENCODEProcessingPipeline_HepG2_NRF1_nan_No-Control_ENCFF313RFR.narrowpeak.gz
+         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_K562_NRF1_nan_No-Control_ENCFF161WZP.narrowpeak.gz
+         data/narrowPeaks/NRF1/ENCODEProcessingPipeline_MCF-7_NRF1_nan_No-Control_ENCFF182QJW.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM1462478_T47D.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935308_H1-hESC.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935309_GM12878.narrowpeak.gz
+         data/narrowPeaks/NRF1/GSM935636_HeLa-S3.narrowpeak.gz)
+    CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
+    WINDOW=200
+    python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21\
+        --window $WINDOW --qval-cutoff 4 --stringent --merge-chip\
+        --num-genes $NUMGENES --chip-paths ${NPS[@]} --train-cells ${CELLS[@]}\
         --chromsize-path data/hg38_chrsize.tsv --EndBeforeCor
     # Usage: Rscript: chip_rna_cor.R <RnaPath> <ChipMatPath> <OutPath> <Window> <NumGenes>
     Rscript virchip-make-expscore-matrix.R $RNA $OUTDIR/NRF1_chr21_ChIPseqMatrix.tsv.gz $OUTDIR/NRF1_chr21_ChipExpCorrelation.tsv.gz $WINDOW $NUMGENES
 
 
+The python script in this step takes 5 minutes and the R script takes 40 seconds, even though
+it is handling 50 times more genes.
+    
 
 
 Quick start
@@ -184,8 +206,8 @@ We have tested Virtual ChIP-seq installation on a CentOS system using python 2.7
 Virtual ChIP-seq requires numpy and pandas and it uses other python modules such as:
 
 
-* Numpy
-* Pandas
+* Numpy (v1.4.15)
+* Pandas (v0.23.1)
 * scikit-learn (v0.18.1)
 * scipy (v1.1.0)
 

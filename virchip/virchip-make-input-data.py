@@ -419,6 +419,6 @@ if __name__ == "__main__":
     list_dfs = [each_df for each_df in list_dfs
                 if len(each_df) > 0]
     bed_df = pd.concat(list_dfs, axis=0)
-    with gzip.open(out_path, "wb") as out_link:
-        bed_df.to_csv(out_link, sep="\t")
-        print("Successfully created {}".format(args.out_path))
+    # with gzip.open(out_path, "wb") as out_link:
+    bed_df.to_csv(out_path, sep="\t", compression="gzip")
+    print("Successfully created {}".format(args.out_path))
