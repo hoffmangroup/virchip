@@ -202,7 +202,7 @@ it is handling 50 times more genes.
 Quick start
 -----------
 
-We have tested Virtual ChIP-seq installation on a CentOS system using python 2.7.11.
+We have tested Virtual ChIP-seq installation on a CentOS 7 system using python 2.7.11.
 Virtual ChIP-seq requires numpy and pandas and it uses other python modules such as:
 
 
