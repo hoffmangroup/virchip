@@ -1,0 +1,38 @@
+package:
+    name: virchip
+    version: 1.2.0
+
+source:
+    fn: virchip_v1.2.0.tar.gz
+    url: https://bitbucket.org/hoffmanlab/virchip/get/virchip_v1.2.0.tar.gz
+    md5sum: 6dd38652bbb75bc2584b38ee5b2b6852
+    sha256: 69a9095829f00839b0dcff80fc62b735582419632095ba27693e8217ffe5cddf
+
+build:
+    number: 0
+    skip: True
+
+requirements:
+    build:
+        - python >= 2.7.11, < 3
+        - pandas >= 0.23.1, < 0.24.0
+        - numpy >= 1.4.15
+        - scikit-lean >= 0.18.1, < 0.19.0
+        - scipy >= 1.1.0, < 1.2.0
+
+    run:
+        - python >= 2.7.11, < 3
+        - pandas >= 0.23.1, < 0.24.0
+        - numpy >= 1.4.15
+        - scikit-lean >= 0.18.1, < 0.19.0
+        - scipy >= 1.1.0, < 1.2.0
+
+    test:
+        files:
+            - test_run.sh
+
+    about:
+        home: https://virchip.hoffmanlab.org
+        license: General Public License version 3
+        license_file: license.txt
+        summary: Virtual ChIP-seq package  

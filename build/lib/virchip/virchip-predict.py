@@ -73,8 +73,8 @@ def predict_binding(model_dir, table_path, out_path, tf):
         raise ValueError(
             "{} doesn't exist, can't predict {}".format(model_path, tf))
     print("Writing {}".format(out_path))
-    with gzip.open(out_path, "wb") as out_link:
-        out_df.to_csv(out_link, sep="\t")
+    # with gzip.open(out_path, "wb") as out_link:
+    out_df.to_csv(out_path, sep="\t", compression="gzip")
 
 
 if __name__ == "__main__":

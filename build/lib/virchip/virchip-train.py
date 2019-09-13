@@ -132,7 +132,7 @@ def get_args():
 def make_file_dict(list_dirs, list_cells, tf):
     dict_files = {}
     for cell in pd.unique(list_cells):
-        idx_cell, = np.where(np.array(list_cells) == cell)
+        idx_cell = np.where(np.array(list_cells) == cell)[0][0]
         dict_files[cell] = [
             "{}/{}".format(list_dirs[idx_cell], each_path)
             for each_path in os.listdir(list_dirs[idx_cell])

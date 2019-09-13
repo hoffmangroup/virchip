@@ -11,7 +11,7 @@ def readme():
 
 
 setup(name='virchip',
-      version='1.1.0',
+      version='1.2.0',
       description=DESCRIPTION,
       long_description=readme(),
       classifiers=[
@@ -31,7 +31,7 @@ setup(name='virchip',
       install_requires=[
           "argparse",
           "numpy",
-          "pandas",
-          "scikit-learn"],
+          "pandas>=0.23.1,<0.24.0",
+          "scikit-learn>=0.18.1,<0.19.0"],
       include_package_data=True,
       zip_safe=False)

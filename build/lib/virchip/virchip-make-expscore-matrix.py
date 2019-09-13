@@ -57,7 +57,8 @@ def load_args(items=[]):
         default=100,
         help="Window size of the wiggle files. defaults to 100")
     parser.add_argument(
-        "--qval_cutoff",
+        "--qval-cutoff",
+        metavar="Q",
         default=0,
         type=float,
         help="Q-value cutoff for filtering peaks. Default no filtering")
@@ -67,11 +68,12 @@ def load_args(items=[]):
         help="If specified, does not consider peaks that are only in one "
         "replicate (when more than 1 replicate exists).")
     parser.add_argument(
-        "--merge_chip",
+        "--merge-chip",
         action="store_true",
         help="Specify to merge multiple ChIP-seq replicates")
     parser.add_argument(
-        "--num_genes",
+        "--num-genes",
+        metavar="NGENES",
         default=5000,
         type=int,
         help="Number of genes to use from the RNA-seq matrix. "
