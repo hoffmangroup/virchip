@@ -4,7 +4,7 @@ package:
 
 source:
     fn: virchip_v1.2.0.tar.gz
-    url: https://bitbucket.org/hoffmanlab/virchip/get/virchip_v1.2.0.tar.gz
+    url: https://bitbucket.org/hoffmanlab/virchip/src/default/get/virchip_v1.2.0.tar.gz
     md5sum: 6dd38652bbb75bc2584b38ee5b2b6852
     sha256: 69a9095829f00839b0dcff80fc62b735582419632095ba27693e8217ffe5cddf
 
