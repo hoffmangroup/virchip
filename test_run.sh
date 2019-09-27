@@ -1,4 +1,5 @@
-set -e 
+#!/bin/bash
+set -euo pipefail
 OUTDIR=${1:-$PWD}
 
 if [ ! -f $OUTDIR/data/K562_RNA.tsv.gz ]
