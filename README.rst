@@ -1,3 +1,5 @@
+.. image:: https://anaconda.org/bioconda/virchip/badges/installer/conda.svg
+.. image:: https://anaconda.org/bioconda/virchip/badges/downloads.svg
 
 
 Virtual ChIP-seq: predicting TF binding by learning from the transcriptome
@@ -47,6 +49,21 @@ with the p-value cutoff for masking correlations which are not significant.
 
 
 .. _Zenodo: https://doi.org/10.5281/zenodo.823297
+
+
+
+Installation
+============
+
+Virtual ChIP-seq is available on bioconda. You can use the following commands to install it::
+
+    conda create -n virchip
+    source activate virchip
+    conda install python=2.7.13
+    conda install -c free scikit-learn=0.18.1
+    conda install -c bioconda virchip
+
+
 
 Cell type specific data
 ==================
