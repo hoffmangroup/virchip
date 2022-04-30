@@ -1,11 +1,12 @@
 MANIFEST.in
 README.rst
 setup.py
-virchip/virchip-make-expscore-matrix.py
-virchip/virchip-make-input-data.py
-virchip/virchip-predict.py
-virchip/virchip-train.py
-virchip/virchip_utils.py
+virchip/__init__.py
+virchip/make_expscore.py
+virchip/make_input.py
+virchip/predict.py
+virchip/train.py
+virchip/utils.py
 virchip.egg-info/PKG-INFO
 virchip.egg-info/SOURCES.txt
 virchip.egg-info/dependency_links.txt

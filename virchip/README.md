@@ -3,7 +3,7 @@
 
 ## Creating matrix for training or prediction
 ```
-usage: virchip-make-input-data.py [-h] [--rna-cell CELL]
+usage: make_input.py [-h] [--rna-cell CELL]
                                   [--blacklist_path BLACKLIST]
                                   --chromsize-path CHROMLEN --dnase-path DNASE
                                   [--bin_size BP] [--array-id JOBARRAY]
@@ -66,7 +66,7 @@ transcription factor binding by learning from the transcriptome. In prep.
 
 ## Prediction
 ```
-usage: virchip-predict.py [-h] model-dir table-path out-path tf
+usage: predict.py [-h] model-dir table-path out-path tf
 
 Predict TF binding using a trained model stored in joblib format.The joblib
 object must be a dictionary with feature names stored with key name 'Features'
@@ -93,7 +93,7 @@ transcription factor binding by learning from the transcriptome. In prep.
 
 ## Training
 ```
-usage: virchip-train.py [-h] --train-dirs [TRAINING [TRAINING ...]]
+usage: train.py [-h] --train-dirs [TRAINING [TRAINING ...]]
                         --train-cells [CELLS [CELLS ...]] [--NJOBS NJOBS]
                         [--test-frac FRACTION]
                         [--exclude-vars [EXCLUDE [EXCLUDE ...]]]

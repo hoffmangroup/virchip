@@ -10,7 +10,7 @@ fi
 
 echo "Testing virchip-make-input-data.py script at $(date)"
 echo "Expected time: 2 minutes and 40 seconds"
-python virchip-make-input-data.py NRF1 $OUTDIR/data/NRF1_complete_table.tsv.gz $OUTDIR/data/ChipExpMats/NRF1\
+python make_input.py NRF1 $OUTDIR/data/NRF1_complete_table.tsv.gz $OUTDIR/data/ChipExpMats/NRF1\
     $OUTDIR/data/K562_RNA.tsv.gz $OUTDIR/data/RefDir --rna-cell K562 --blacklist_path\
     $OUTDIR/data/hg38_EncodeBlackListedRegions_200bpBins.bed.gz\
     --bin_size 200 --merge-chips --chromsize-path $OUTDIR/data/hg38_chrsize.tsv\
@@ -27,7 +27,7 @@ fi
 
 echo "Testing virchip-predict.py script at $(date)"
 echo "Expected time: 6 seconds"
-python virchip-predict.py $OUTDIR/data/trainedModels $OUTDIR/data/NRF1_complete_table.tsv.gz \
+python predict.py $OUTDIR/data/trainedModels $OUTDIR/data/NRF1_complete_table.tsv.gz \
     $OUTDIR/data/NRF1_predictions.tsv.gz NRF1
 echo "Finished testing virchip-predict.py script at $(date)"
 
@@ -41,7 +41,7 @@ echo "Testing virchip-train.py script at $(date)"
 echo "Expected time: 7 minutes and 30 seconds"
 TRAINDIRS=($OUTDIR/data/trainDirs/GM12878 $OUTDIR/data/trainDirs/K562)
 TRAINCELLS=(GM12878 K562)
-python virchip-train.py NRF1 $OUTDIR/data --test-frac 0.25 --merge-chips \
+python train.py NRF1 $OUTDIR/data --test-frac 0.25 --merge-chips \
     --train-dirs ${TRAINDIRS[@]} --train-cells ${TRAINCELLS[@]} \
     --hidden-layers 2 5 --hidden-units 10 --activation-functions logistic \
     --regularization 0.001 0.01
@@ -64,7 +64,7 @@ NPS=(data/narrowPeaks/NRF1/ENCODEProcessingPipeline_HepG2_NRF1_nan_No-Control_EN
 CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
 WINDOW=200
 NUMGENES=100
-python virchip-make-expscore-matrix.py\
+python make_expscore.py\
     $TF $OUTDIR $RNA chr21 --window $WINDOW\
     --qval-cutoff 4 --stringent --merge-chip\
     --num-genes $NUMGENES --chip-paths ${NPS[@]} \

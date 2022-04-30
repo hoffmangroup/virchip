@@ -11,7 +11,7 @@ def readme():
 
 
 setup(name='virchip',
-      version='1.2.0',
+      version='1.2.2',
       description=DESCRIPTION,
       long_description=readme(),
       classifiers=[

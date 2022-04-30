@@ -1,10 +1,9 @@
 from argparse import ArgumentParser
-import gzip
 import os
 import pandas as pd
 from sklearn.externals import joblib
-from virchip_utils import load_prepare_bed
-from virchip_utils import get_acc_idx
+from utils import load_prepare_bed
+from utils import get_acc_idx
 
 
 def get_args():

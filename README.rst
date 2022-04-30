@@ -1,5 +1,3 @@
-.. image:: https://anaconda.org/bioconda/virchip/badges/installer/conda.svg
-.. image:: https://anaconda.org/bioconda/virchip/badges/downloads.svg
 
 
 Virtual ChIP-seq: predicting TF binding by learning from the transcriptome
@@ -33,14 +31,14 @@ database.
 Virtual ChIP-seq also uses epigenomic information, such as previous data
 on binding of TFs at each genomic position. These are also pre-calculated in
 reference matrices which can be downloaded from Zenodo_.
-The *virchip-make-input-data.py* script merges these reference
+The *make_input.py* script merges these reference
 matrices which include Cistrome DB, ENCODE, PhastCons genomic conservation, and outputs of
 fimo on all JASPAR DB motifs for any genomic region
 which was accessible in any of the Roadmap tissue DNase-seq data.
 
 
 If you want to create a new expression score reference matrix (e.g. for a new TF)
-you can use the *virchip-make-expscore-matrix.py* script.
+you can use the *make_expscore.py* script.
 This script calculates all pairwise Pearson correlation R and is slow (around 18 CPU hours).
 You can use the **-EndBeforeCor** option and run the output with *virchip-make-expscore-matrix.R*.
 This Rscript bootstraps samples to estimate which Pearson R correlation cutoff is associated
@@ -50,25 +48,10 @@ with the p-value cutoff for masking correlations which are not significant.
 
 .. _Zenodo: https://doi.org/10.5281/zenodo.823297
 
-
-
-Installation
-============
-
-Virtual ChIP-seq is available on bioconda. You can use the following commands to install it::
-
-    conda create -n virchip
-    source activate virchip
-    conda install python=2.7.13
-    conda install -c free scikit-learn=0.18.1
-    conda install -c bioconda virchip
-
-
-
 Cell type specific data
 ==================
 
-Use the *virchip-make-input-data.py* script to create a reference table
+Use the *make_input.py* script to create a reference table
 with predictive features of TF binding that Virtual ChIP-seq uses for training and prediction.
 You need a gzipped RNA-seq matrix where rows are Hugo gene symbols and
 columns are different cell types (at least one cell). You also need a standard gzipped
@@ -76,7 +59,7 @@ narrow peak file with chromatin accessibility information on your cell type::
 
     wget https://www.pmgenomics.ca/hoffmanlab/proj/virchip/data/virchip-startup-data.tar.gz --no-check-certificate
     tar -xvf virchip-startup-data.tar.gz
-    python virchip-make-input-data.py NRF1 data/NRF1_complete_table.tsv.gz data/ChipExpMats/NRF1\
+    python make_input.py NRF1 data/NRF1_complete_table.tsv.gz data/ChipExpMats/NRF1\
         data/K562_RNA.tsv.gz data/RefDir --rna-cell K562 --blacklist_path\
         data/hg38_EncodeBlackListedRegions_200bpBins.bed.gz\
         --bin_size 200 --merge-chips --chromsize-path data/hg38_chrsize.tsv\
@@ -101,9 +84,9 @@ Prediction
 We have concatenated data of several cell types and learnied parameters of multi-layer perceptron
 for each TF. These models are available from Virtual ChIP-seq datasets deposited at Zenodo_.
 You can use virchip-predict.py and predict binding of 70 TFs (36 with MCC > 0.3).
-*virchip-predict.py* assumes that a directory contains trained models named as <TF>.joblib.pickle::
+*predict.py* assumes that a directory contains trained models named as <TF>.joblib.pickle::
 
-    python virchip-predict.py data/trainedModels data/NRF1_complete_table.tsv.gz \
+    python predict.py data/trainedModels data/NRF1_complete_table.tsv.gz \
         data/NRF1_predictions.tsv.gz NRF1
 
 
@@ -125,7 +108,7 @@ Training
 
 If you want to train new data with Virtual ChIP-seq, make sure to exclude training cell type
 information from ChIP-seq data and matrix for association of gene expression and TF binding.
-Otherwise your model would overfit. The *virchip-train.py* script expects a repository where 
+Otherwise your model would overfit. The *train.py* script expects a repository where 
 subfolders are different cell types, and within each subfolder there are per chromosome files
 with necessary information for prediction of each TF. It will rename the column <Cell>.0.<TF> to
 "Bound", and will optimize hyper-parameters for the multi-layer perceptron.
@@ -149,7 +132,7 @@ Expression score
 
 We have provided references matrices for calculating the expression score in a new cell type.
 If you want to generate a new reference matrix (e.g. for a new TF), you can do that
-using the stand-alone python script *virchip-make-expscore-matrix.py*::
+using the stand-alone python script *make_expscore.py*::
 
     TF=NRF1
     OUTDIR=data/ChipExpMats/NRF1-V2
@@ -165,7 +148,7 @@ using the stand-alone python script *virchip-make-expscore-matrix.py*::
     CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
     WINDOW=200
     NUMGENES=100
-    python virchip-make-expscore-matrix.py\
+    python make_expscore.py\
         $TF $OUTDIR $RNA chr21 --window $WINDOW\
         --qval-cutoff 4 --stringent --merge-chip\
         --num-genes $NUMGENES --chip-paths ${NPS[@]} \
@@ -203,7 +186,7 @@ Example code::
          data/narrowPeaks/NRF1/GSM935636_HeLa-S3.narrowpeak.gz)
     CELLS=(HepG2 K562 MCF-7 T47D H1-hESC GM12878 HeLa-S3)
     WINDOW=200
-    python virchip-make-expscore-matrix.py $TF $OUTDIR $RNA chr21\
+    python make_expscore.py $TF $OUTDIR $RNA chr21\
         --window $WINDOW --qval-cutoff 4 --stringent --merge-chip\
         --num-genes $NUMGENES --chip-paths ${NPS[@]} --train-cells ${CELLS[@]}\
         --chromsize-path data/hg38_chrsize.tsv --EndBeforeCor
@@ -250,7 +233,7 @@ Here we show one example with a subset of data for chr21 of NRF1::
 
 First we generate the a table with required features::
 
-   python virchip-make-input-data.py NRF1 data/NRF1_complete_table.tsv.gz data/ChipExpMats/NRF1\
+   python make_input.py NRF1 data/NRF1_complete_table.tsv.gz data/ChipExpMats/NRF1\
         data/K562_RNA.tsv.gz data/RefDir --rna-cell K562 --blacklist_path\
         data/hg38_EncodeBlackListedRegions_200bpBins.bed.gz\
         --bin_size 200 --merge-chips --chromsize-path data/hg38_chrsize.tsv\
@@ -259,7 +242,7 @@ First we generate the a table with required features::
 
 Now we will predict binding of NRF1 using an RNA-seq table and a reference matrix located at virchip/data::
 
-    python virchip-predict.py data/trainedModels data/NRF1_complete_table.tsv.gz\
+    python predict.py data/trainedModels data/NRF1_complete_table.tsv.gz\
         data/NRF1_predictions.tsv.gz NRF1
 
 

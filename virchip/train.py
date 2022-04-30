@@ -6,10 +6,10 @@ from scipy import stats
 from sklearn import cross_validation
 from sklearn import metrics
 from sklearn.externals import joblib
-from virchip_utils import load_prepare_bed
-from virchip_utils import scale_columns
-from virchip_utils import get_acc_idx
-from virchip_utils import find_hyperparam_neuralnet
+from utils import load_prepare_bed
+from utils import scale_columns
+from utils import get_acc_idx
+from utils import find_hyperparam_neuralnet
 
 
 def get_args():
