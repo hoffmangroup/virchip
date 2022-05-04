@@ -69,9 +69,7 @@ You can try these commands::
     conda create -n virchip python=2.7.13
     source activate virchip
     conda install -c free scikit-learn=0.18.1
-    git clone https://github.com/hoffmangroup/virchip
-    cd virchip
-    python setup.py install
+    pip install virtualChipSeq==1.2.2
 
 
 Cell type specific data
@@ -248,9 +246,7 @@ Download Virtual ChIP-seq to the directory of your python packages using::
     conda create -n virchip python=2.7.13
     source activate virchip
     conda install -c free scikit-learn=0.18.1
-    git clone https://github.com/hoffmangroup/virchip
-    cd virchip
-    python setup.py install 
+    pip install virtualChipSeq==1.2.2
 
 
 Downloading Virtual ChIP-seq supplementary data from Zenodo takes a lot of time.
