@@ -66,9 +66,8 @@ Virtual ChIP-seq is available on bioconda. You can use the following commands to
 Given the deprecation of python2, you may have issues with direct installation with bioconda.
 You can try these commands::
 
-    conda create -n virchip python=2.7.13
+    conda create --name virchip -c free python=2.7.13 scikit-learn=0.18.1
     source activate virchip
-    conda install -c free scikit-learn=0.18.1
     pip install virtualChipSeq==1.2.2
 
 
@@ -243,9 +242,8 @@ At this point, unfortunately, you cannot use pre-trained Virtual ChIP-seq models
 Make sure that conda is installed.
 Download Virtual ChIP-seq to the directory of your python packages using::
 
-    conda create -n virchip python=2.7.13
+    conda create --name virchip -c free python=2.7.13 scikit-learn=0.18.1
     source activate virchip
-    conda install -c free scikit-learn=0.18.1
     pip install virtualChipSeq==1.2.2
 
 
