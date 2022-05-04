@@ -242,12 +242,15 @@ If you want to use pre-trained Virtual ChIP-seq models, newer versions of scikit
 Scikit-learn changed their data structure for saving the model parameters and they don't
 have an API for extracting and re-saving the model parameters.
 At this point, unfortunately, you cannot use pre-trained Virtual ChIP-seq models with newer versions.
-Virtual ChIP-seq uses mercurial version control. Make sure that mercurial (hg) is installed.
+Make sure that conda is installed.
 Download Virtual ChIP-seq to the directory of your python packages using::
 
-    hg clone https://bitbucket.org/hoffmanlab/virchip
+    conda create -n virchip python=2.7.13
+    source activate virchip
+    conda install -c free scikit-learn=0.18.1
+    git clone https://github.com/hoffmangroup/virchip
     cd virchip
-    python setup.py install
+    python setup.py install 
 
 
 Downloading Virtual ChIP-seq supplementary data from Zenodo takes a lot of time.
