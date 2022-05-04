@@ -63,6 +63,16 @@ Virtual ChIP-seq is available on bioconda. You can use the following commands to
     conda install -c bioconda virchip
 
 
+Given the deprecation of python2, you may have issues with direct installation with bioconda.
+You can try these commands::
+
+    conda create -n virchip python=2.7.13
+    source activate virchip
+    conda install -c free scikit-learn=0.18.1
+    git clone https://github.com/hoffmangroup/virchip
+    cd virchip
+    python setup.py install
+
 
 Cell type specific data
 ==================
