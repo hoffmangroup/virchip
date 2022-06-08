@@ -269,6 +269,10 @@ Now we will predict binding of NRF1 using an RNA-seq table and a reference matri
         data/NRF1_predictions.tsv.gz NRF1
 
 
+Citation
+--------
+Karimzadeh M. and Hoffman MM. Virtual ChIP-seq: predicting transcription factor binding by learning from the transcriptome. *Genome biology*, *in press*, 2022.
+
 
 Contact, support and questions
 ------------------------------
